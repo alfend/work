@@ -1,0 +1,15 @@
+SELECT
+trim(o.cad_num)||'|'||
+trim(regexp_replace(o.adr_prn_desc,'(\t|  +)',' '))||'|'||
+trim(o.bti_liter) ||'|'||
+trim(regexp_replace(v.name,'(\t|  +)',' '))||'|'||
+o.total_sq||'|'||
+trim(regexp_replace(o.name,'(\t|  +)',' '))
+from
+  re_objects o -- объект
+  left join adr_address_voc a on (o.adr_id = a.id and o.dept_id = a.dept_id) 
+  left join re_purposes t on (o.id = t.re_id)
+  left join re_purpose_voc v on (t.type_code = v.code)
+where   
+  o.r_type in (2,3)
+  and o.status != 'У';

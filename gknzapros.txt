@@ -1,0 +1,15 @@
+SELECT
+    o.cad_num||'|'||
+    zkoks.f$_get_address(r.id)||'|'||
+    regexp_replace(r.letter,'\|','I')||'|'||
+    r.type||'|'||
+    ch.area||'|'||
+    r.name
+FROM 
+  zkoks.obj o 
+  inner join zkoks.reg r on r.obj_id = o.id
+  left join zkoks.characteristic ch on (ch.reg_id = r.id)
+WHERE 
+    o.obj_kind_id in (22, 23)
+and o.status not in ('07', '08')
+and r.id = (select max(id) from zkoks.reg where obj_id = o.id and date_egroks is not null)

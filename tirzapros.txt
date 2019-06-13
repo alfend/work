@@ -1,0 +1,17 @@
+select
+    eo.NORMALIZED_NUMBER||'|'||
+    trim(regexp_replace(eadr.note,'([[:cntrl:]]| )+',' ')) egrp_adr||'|'||
+    eo.LITERBTI||'|'||
+    eo.objecttype||'|'||
+    OA.AREA||'|'||
+    trim(regexp_replace(nvl(gc.DSCR, gF.DSCR ),'([[:cntrl:]]| )+',' ')) egrp_DSCR/*  */   
+   
+From
+    t$grp#object eo
+    left join t$tir#address eadr on (eo.address_id = eadr.address_id)
+    left join T$GRP#OBJECT_AREA OA on (OA.OBJECT_ID = eo.OBJECT_ID)
+    left join T$GRP#COMPLEX gc ON (gc.OBJECT_ID = eo.OBJECT_ID)
+    left join T$GRP#FLAT gF ON (gF.OBJECT_ID = eo.OBJECT_ID)
+Where
+  eo.OBJECT_CLASS in ('C','F' )
+  and  eo.STATUS =  1

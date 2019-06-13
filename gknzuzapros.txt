@@ -1,0 +1,17 @@
+SELECT
+    o.cad_num||'|'||
+    zkoks.f$_get_address(r.id)||'|'||
+    r.letter||'|'||
+    r.type||'|'||
+    nvl(a009.value,a008.value)||'|'||
+    zucat.value
+FROM 
+  zkoks.obj o 
+  inner join zkoks.reg r on r.obj_id = o.id
+left join zkoks.area_new a009 on a009.code = '009' and a009.reg_id=r.id
+left join zkoks.area_new a008 on a008.code = '008' and a008.reg_id=r.id --декларированная
+left join   zkoks.CATEGORY cat on  cat.reg_id=r.id  left join  cad_qual_dev.V$_PURPOSE_LAND zucat  on  zucat.code= cat.code
+WHERE 
+    o.obj_kind_id in (5)
+and o.status not in ('07', '08')
+and r.id = (select max(id) from zkoks.reg where obj_id = o.id and date_egroks is not null)
